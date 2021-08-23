@@ -1,0 +1,24 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Login page" %}{% endblock %}
+
+{% block  content_page %}
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <h3>Welcome to WMS</h3>
+            {% include "message.html" %}
+            <form class="m-t" role="form" action="" novalidate method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group {% if field.errors %}has-error{% endif %}">
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

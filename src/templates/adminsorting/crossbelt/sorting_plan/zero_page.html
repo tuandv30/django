@@ -1,0 +1,14 @@
+{% extends "adminsorting/base_zero_page.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block zero_page_type %}warning{% endblock %}
+{% block zero_page_header %}{% trans "No staff members found." %}{% endblock %}
+
+{% block zero_page_body %}
+    {% blocktrans %}
+        Staff members are users who have access to the dashboard.<br>
+        You can create staff members by using the <i class="fa fa-plus"></i>
+        button or by using option "Promote to staff" in the customer details view.
+    {% endblocktrans %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<div class="modal-dialog">
+
+    <div class="modal-content animated fadeIn">
+        <form role="form" method="POST" action="{% block modal_action_url %}#!{% endblock %}" class="form-horizontal"
+              novalidate>
+            {% csrf_token %}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <i class="{% block modal_icon %}fa fa-warning modal-icon{% endblock %}"></i>
+                <h5 class="modal-title">{% block modal_title %}{% endblock %}</h5>
+                <small>{% block modal_desc %}{% endblock %}</small>
+            </div>
+            <div class="modal-body">
+                {% block modal_content %}{% endblock %}
+            </div>
+            <div class="modal-footer">
+                {% block modal_cancel_action %}
+                    <button type="button" class="btn btn-white" data-dismiss="modal">
+                        {% trans "Cancel" context "Dashboard cancel action" %}
+                    </button>
+                {% endblock %}
+
+
+                {% block modal_primary_action %}
+                    <button type="submit" class="btn btn-primary">
+                        {% trans "Submit" context "Dashboard sumbit action" %}
+                    </button>
+                {% endblock %}
+
+            </div>
+
+        </form>
+    </div>
+
+</div>

@@ -1,0 +1,24 @@
+{% extends "webview/base_modal.html" %}
+
+{% load i18n %}
+
+{% block modal_title %}
+    {% blocktrans trimmed %}
+        Chuyển kịch bản
+    {% endblocktrans %}
+{% endblock %}
+
+{% block modal_icon %}fa fa-toggle-on modal-icon text-danger red{% endblock %}
+{% block modal_action_url %}{% url 'adminsorting:plan-switch' %}{% endblock %}
+
+{% block modal_content %}
+    <div class="col s12">
+        {% trans "Bạn có chắc chắn muốn dừng kịch bản?" %}
+    </div>
+{% endblock %}
+
+{% block modal_primary_action %}
+    <button type="submit" class="btn btn-danger">
+        {% trans "Dừng" %}
+    </button>
+{% endblock %}

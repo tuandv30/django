@@ -1,0 +1,5 @@
+{{ formset.management_form }}
+
+{% for form in formset %}
+    {% include "inspiniacssform/filters/form.html" with form=form %}
+{% endfor %}

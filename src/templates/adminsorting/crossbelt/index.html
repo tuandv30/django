@@ -1,0 +1,1033 @@
+{% extends "adminsorting/base.html" %}
+{% load static %}
+
+{% block title %}Crossbelt Management System{% endblock %}
+
+{% block body_content %}
+    <div id="app" class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>[[title.InboundRate]]</h5>
+                        <div class="ibox-tools">
+                            <div class="btn-group">
+                                <button :class="{'active': statusButton.todayInboundRate}" id="btn_today_rabao"
+                                        @click="onClickInboundRate('today')" type="button"
+                                        class="btn btn-xs btn-white"> [[title.today]]
+                                </button>
+                                <button :class="{'active': statusButton.lastweekInboundrRate}" id="btn_lastweek_rabao"
+                                        @click="onClickInboundRate('lastweek')" type="button"
+                                        class="btn btn-xs btn-white"> [[title.lastweek]]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="pieInboundRate" style="max-height: 210px; height:210px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5 class="no-margins">[[title.ScannerRate]]</h5>
+                        <div class="ibox-tools">
+                            <div class="btn-group">
+                                <button :class="{'active': statusButton.todayScannerRate}"
+                                        @click="onClickScannerRate('today')" type="button"
+                                        class="btn btn-xs btn-white"> [[title.today]]
+                                </button>
+                                <button :class="{'active': statusButton.lastweekScannerRate}"
+                                        @click="onClickScannerRate('lastweek')" type="button"
+                                        class="btn btn-xs btn-white">
+                                    [[title.lastweek]]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="doughnutChartScannerRate" style="max-height: 210px; height:210px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="margin-right: 3px" class="label label-danger"> Max </span>
+                                    <h5> [[title.Quantity]] </h5>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-success"> [[title.yesterday]] </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-warning float-right"> [[title.lastweek]] </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h1 style="float:right" class="no-margins font-bold">[[cards.quantity.best_today]]</h1>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.quantity.status_percent_today ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.quantity.percent_best]]
+                                    <i :class="[cards.quantity.status_percent_today ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.quantity.status_percent_lastweek ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.quantity.percent_best_lastweek]]
+                                    <i :class="[cards.quantity.status_percent_lastweek ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span style="float: right">[[cards.quantity.small_best]]</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span style="float: right">[[cards.quantity.best_yesterday]]</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span style="float: right">[[cards.quantity.best_lastweek]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="margin-right: 3px" class="label label-danger"> Max </span>
+                                    <h5> [[title.Infeed]] </h5>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-success float-right"> [[title.yesterday]] </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-warning float-right"> [[title.lastweek]] </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h1 class="no-margins font-bold float-right">[[cards.infeed.feed_today]]</h1>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.infeed.status_percent_today ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.infeed.percent_feed_yesterday]]
+                                    <i :class="[cards.infeed.status_percent_today ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.infeed.status_percent_lastweek ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.infeed.percent_feed_lastweek]]
+                                    <i :class="[cards.infeed.percent_feed_lastweek ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span class="float-right">[[cards.infeed.small_feed]]</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="float-right">[[cards.infeed.feed_yesterday]]</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="float-right">[[cards.infeed.feed_lastweek]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5> [[title.Quantity24H]] </h5>
+                        <div class="ibox-tools">
+                            <div class="btn-group">
+                                <button @click="onClickTotal('today', 'click')"
+                                        :class="{'active': statusButton.todayTotal}"
+                                        id="btn_today_total" type="button" class="btn btn-xs btn-white"> [[title.today]]
+                                </button>
+                                <button @click="onClickTotal('lastweek', 'click')"
+                                        :class="{'active': statusButton.lastweekTotal}" id="btn_lastweek_total"
+                                        type="button" class="btn btn-xs btn-white">
+                                    [[title.lastweek]]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div style="height:370px" id="barChartTotal"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <h5> [[title.Sorting]] </h5>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-success float-right"> [[title.yesterday]] </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-warning float-right"> [[title.lastweek]]</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h1 class="no-margins font-bold float-right">[[cards.sorting.total_today]]</h1>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.sorting.status_percent_today ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    id="percent_total" class="float-right">[[cards.sorting.percent_total]]
+                                    <i :class="[cards.sorting.status_percent_today ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.sorting.status_percent_lastweek ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.sorting.percent_total_lastweek]]
+                                    <i :class="[cards.sorting.status_percent_lastweek ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span class="float-right"> [[title.package]] </span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span id="total_yesterday" class="float-right">[[cards.sorting.total_yesterday]]</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span id="total_lastweek" class="float-right">[[cards.sorting.total_lastweek]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <h5> [[title.Inbound]] </h5>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-success float-right"> [[title.yesterday]] </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-warning float-right"> [[title.lastweek]] </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h1 class="no-margins font-bold float-right">[[cards.inbound.import_today]]</h1>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.inbound.status_percent_today ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.inbound.percent_import]]
+                                    <i :class="[cards.inbound.status_percent_today ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.inbound.status_percent_lastweek ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.inbound.percent_import_last_week]]
+                                    <i :class="[cards.inbound.status_percent_lastweek ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span class="float-right"> [[title.package]] </span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="float-right">[[cards.inbound.import_yesterday]]</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="float-right">[[cards.inbound.import_lastweek]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h5> [[title.Outbound]] </h5>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-success float-right"> [[title.yesterday]] </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox-tools">
+                                    <span style="float:right" class="label label-warning float-right"> [[title.lastweek]] </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h1 class="no-margins font-bold float-right">[[cards.outbound.export_today]]</h1>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.outbound.status_percent_today ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.outbound.percent_export]]
+                                    <i :class="[cards.outbound.status_percent_today ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 :class="[ cards.outbound.status_percent_lastweek ? 'stat-percent font-bold text-danger no-margins' : 'stat-percent font-bold text-info no-margins']"
+                                    class="float-right">[[cards.outbound.percent_export_last_week]]
+                                    <i :class="[cards.outbound.status_percent_lastweek ? 'fa fa-level-down' : 'fa fa-level-up']"></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span class="float-right"> [[title.package]] </span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="float-right">[[cards.outbound.export_yesterday]]</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="float-right">[[cards.outbound.export_lastweek]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5> [[title.Power24H]] </h5>
+                        <div class="ibox-tools">
+                            <div class="btn-group">
+                                <button @click="onClickPower('today', 'click')"
+                                        :class="{'active': statusButton.todayPower}"
+                                        id="btn_today_congsuat" type="button" class="btn btn-xs btn-white">
+                                    [[title.today]]
+                                </button>
+                                <button @click="onClickPower('lastweek', 'click')"
+                                        :class="{'active': statusButton.lastweekPower}"
+                                        id="btn_lastweek_congsuat" type="button" class="btn btn-xs btn-white">
+                                    [[title.lastweek]]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div style="height: 370px" id="lineChartTotal"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h3 class="font-bold" style="text-align: center"> [[title.TopChute]] </h3>
+                        <ul v-for="(item, index) in cards.chutefull" :key="index" class="list-group clear-list m-t">
+                            <li class="list-group-item fist-item">
+                                <span class="pull-right">[[item.total]] phút</span>
+                                <span style="margin-right: 10px" class="label label-success">[[index]]</span>
+                                Máng [[item.chute_code]]
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
+    <script src="{% static "js/plugins/echart/echarts.js" %}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        const api = axios.create({
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            transformResponse: [(data) => {
+                try {
+                    return JSON.parse(data)
+                } catch {
+                    return data
+                }
+            }],
+        })
+        var app = new Vue({
+            el: '#app',
+            delimiters: ['[[', ']]'],
+            data: {
+                title: {
+                    InboundRate: 'Tỷ lệ rã bao',
+                    ScannerRate: 'Tỷ lệ đọc Scanner',
+                    Quantity: 'Sản lượng',
+                    Infeed: 'Cấp hàng',
+                    Quantity24H: 'Sản lượng Crossbelt 24h qua',
+                    Power24H: 'Công suất Crossbelt 24h qua',
+                    Sorting: 'Sorting',
+                    Inbound: 'Nhập kho',
+                    Outbound: 'Xuất kho',
+                    TopChute: 'TOP Máng có thời gian đầy 30 phút vừa qua',
+                    today: 'Hôm nay',
+                    yesterday: 'Hôm qua',
+                    lastweek: 'Tuần trước',
+                    package: 'Đơn hàng'
+                },
+                params: {
+                    today: 'today',
+                    yesterday: 'yesterday',
+                    lastweek: 'lastweek',
+                },
+                statusButton: {
+                    todayInboundRate: false,
+                    lastweekInboundrRate: false,
+                    todayScannerRate: false,
+                    lastweekScannerRate: false,
+                    todayTotal: false,
+                    lastweekTotal: false,
+                    todayPower: false,
+                    lastweekPower: false
+                },
+                pieOption: {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b} ({d}%)',
+                    },
+                    grid: {
+                        left: '5%',
+                        right: '5%',
+                        bottom: '0%',
+                        top: '0%'
+                    },
+                    toolbox: {
+                        show: true,
+                        orient: 'vertical',
+                        left: 'right',
+                        top: 'center',
+                        feature: {
+                            mark: {show: true},
+                            saveAsImage: {
+                                show: true,
+                                title: 'tải ảnh về'
+                            }
+                        }
+                    },
+                    title: [
+                        {
+                            subtext: "Zone A",
+                            left: "20%",
+                            top: "70%"
+                        },
+                        {
+                            subtext: "Zone B",
+                            left: "70%",
+                            top: "70%"
+
+                        }
+                    ],
+                },
+                barOption: {
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            axisTick: {show: false},
+                        }
+                    ],
+                    toolbox: {
+                        show: true,
+                        orient: 'vertical',
+                        left: 'right',
+                        top: 'center',
+                        feature: {
+                            mark: {show: true},
+                            saveAsImage: {
+                                show: true,
+                                title: 'tải ảnh về'
+                            }
+                        }
+                    },
+                    grid: {
+                        left: '7%',
+                        right: '7%',
+                        top: '15%',
+                        bottom: '15%'
+                    },
+                    yAxis: [
+                        {
+                            type: 'value',
+                        }
+                    ],
+                },
+                lineOption: {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow',
+                        },
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        textStyle: {
+                            color: 'rgba(255,255,255,1)',
+                            fontFamily: 'Arial',
+                            fontStyle: 'italic',
+                        },
+                        formatter: function (params) {
+                            total = 0
+                            sub = ""
+                            for (i = 0; i < params.length; i++) {
+                                total = total + params[i].value;
+                                sub = sub + "<br />" + '<span style="font-size:20px;color:' + params[i].color + '">&#9679 </span>' + params[i].seriesName + ": " + params[i].value;
+                            }
+                            title = params[0].name + '<br /><span style="color:yellow">' + '&#9733 TOTAL: ' + total + '</span>';
+                            return title + sub
+                        }
+                    },
+                    toolbox: {
+                        show: true,
+                        orient: 'vertical',
+                        left: 'right',
+                        top: 'center',
+                        feature: {
+                            mark: {show: true},
+                            saveAsImage: {
+                                show: true,
+                                title: 'tải ảnh về'
+                            }
+                        }
+                    },
+                    legend: {
+                        bottom: true,
+                        icon: 'roundRects'
+                    },
+                    grid: {
+                        left: "5%",
+                        right: "5%",
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            axisTick: {show: false},
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                        }
+                    ],
+                },
+                cards: {
+                    quantity: {
+                        best_today: '...,...',
+                        percent_best: '...',
+                        percent_best_lastweek: '...',
+                        small_best: '...',
+                        best_lastweek: '...',
+                        best_yesterday: '',
+                        status_percent_today: false,
+                        status_percent_lastweek: false,
+                    },
+                    infeed: {
+                        feed_today: '...,...',
+                        percent_feed_yesterday: '...',
+                        percent_feed_lastweek: '...',
+                        small_feed: '...',
+                        feed_yesterday: '...',
+                        feed_lastweek: '...',
+                        status_percent_today: false,
+                        status_percent_lastweek: false,
+                    },
+                    sorting: {
+                        total_today: 0,
+                        percent_total: 0,
+                        percent_total_lastweek: '...',
+                        total_yesterday: '...',
+                        total_lastweek: '...',
+                        current: '',
+                        sum_today: '',
+                        status_percent_today: false,
+                        status_percent_lastweek: false,
+                    },
+                    inbound: {
+                        import_today: '...,...',
+                        percent_import: '...',
+                        percent_import_last_week: '...',
+                        import_yesterday: '...',
+                        import_lastweek: '...',
+                        status_percent_today: false,
+                        status_percent_lastweek: false,
+                    },
+                    outbound: {
+                        export_today: '...,...',
+                        percent_export: '...',
+                        percent_export_last_week: '...',
+                        export_yesterday: '...',
+                        export_lastweek: '...',
+                        status_percent_today: false,
+                        status_percent_lastweek: false,
+                    },
+                    chutefull: {}
+                },
+
+            },
+            mounted: function () {
+                this.render()
+                setInterval(this.render(), 1000 * 60 * 5)
+            },
+            methods: {
+                render() {
+                    this.onClickInboundRate(this.params.today)
+                    this.onClickScannerRate(this.params.today)
+                    this.onClickTotal(this.params.today)
+                    this.onClickPower(this.params.today)
+                    this.getInfoCard()
+                    this.showChuteFull()
+                },
+                onClickInboundRate(flag) {
+                    if (flag === this.params.today) {
+                        this.statusButton.todayInboundRate = true
+                        this.statusButton.lastweekInboundrRate = false
+                    } else {
+                        this.statusButton.todayInboundRate = false
+                        this.statusButton.lastweekInboundrRate = true
+                    }
+                    const pieChart = echarts.init(document.getElementById("pieInboundRate"))
+                    pieChart.setOption(this.pieOption)
+                    this.getDataChartInboundRate(flag).then(res => {
+                        const data = res.data
+                        pieChart.setOption({
+                            series: [{
+                                name: 'quantity',
+                                type: 'pie',
+                                radius: 50,
+                                center: ['25%', '45%'],
+                                data: [
+                                    {
+                                        value: data.datasets[0].data[0],
+                                        name: data.labels[0],
+                                        itemStyle: {color: data.datasets[0].borderColor[0]}
+                                    },
+                                    {
+                                        value: data.datasets[0].data[1],
+                                        name: data.labels[1],
+                                        itemStyle: {color: data.datasets[0].borderColor[1]}
+                                    },
+                                ],
+                                label: {
+                                    formatter: '{per|{d}%}',
+                                    rich: {
+                                        per: {
+                                            color: '#000',
+                                            borderRadius: 1
+                                        }
+                                    }
+                                },
+                            },
+                                {
+                                    type: 'pie',
+                                    radius: 50,
+                                    center: ['75%', '45%'],
+                                    data: [
+                                        {
+                                            value: data.datasets[1].data[0],
+                                            name: data.labels[0],
+                                            itemStyle: {color: data.datasets[1].borderColor[0]}
+                                        },
+                                        {
+                                            value: data.datasets[1].data[1],
+                                            name: data.labels[1],
+                                            itemStyle: {color: data.datasets[1].borderColor[1]}
+                                        },
+                                    ],
+                                    label: {
+                                        formatter: '{per|{d}%}',
+                                        rich: {
+                                            per: {
+                                                color: '#000',
+                                                borderRadius: 1
+                                            }
+                                        }
+                                    },
+
+                                }
+                            ]
+                        })
+                    })
+                },
+                onClickScannerRate(flag) {
+                    if (flag === this.params.today) {
+                        this.statusButton.todayScannerRate = true
+                        this.statusButton.lastweekScannerRate = false
+                    } else {
+                        this.statusButton.todayScannerRate = false
+                        this.statusButton.lastweekScannerRate = true
+                    }
+                    const pieChart = echarts.init(document.getElementById("doughnutChartScannerRate"))
+                    pieChart.setOption(this.pieOption)
+                    this.getDataChartScannerRate(flag).then(res => {
+                        const data = res.data
+                        pieChart.setOption({
+                            series: [{
+                                type: 'pie',
+                                radius: 50,
+                                center: ['25%', '45%'],
+                                data: [
+                                    {
+                                        value: data.datasets[0].data[0],
+                                        name: data.labels[0],
+                                        itemStyle: {color: data.datasets[0].borderColor[0]}
+                                    },
+                                    {
+                                        value: data.datasets[0].data[1],
+                                        name: data.labels[1],
+                                        itemStyle: {color: data.datasets[0].borderColor[1]}
+                                    },
+                                ],
+                                label: {
+                                    formatter: '{per|{d}%}',
+                                    rich: {
+                                        per: {
+                                            color: '#000',
+                                            borderRadius: 1
+                                        }
+                                    }
+                                },
+                            },
+                                {
+                                    type: 'pie',
+                                    radius: 50,
+                                    center: ['75%', '45%'],
+                                    data: [
+                                        {
+                                            value: data.datasets[1].data[0],
+                                            name: data.labels[0],
+                                            itemStyle: {color: data.datasets[1].borderColor[0]}
+                                        },
+                                        {
+                                            value: data.datasets[1].data[1],
+                                            name: data.labels[1],
+                                            itemStyle: {color: data.datasets[1].borderColor[1]}
+                                        },
+                                    ],
+                                    label: {
+                                        formatter: '{per|{d}%}',
+                                        rich: {
+                                            per: {
+                                                color: '#000',
+                                                borderRadius: 1
+                                            }
+                                        }
+                                    },
+                                }
+                            ]
+                        })
+                    })
+                },
+                onClickTotal(flag, click = '') {
+                    if (flag === this.params.today) {
+                        this.statusButton.todayTotal = true
+                        this.statusButton.lastweekTotal = false
+                    } else {
+                        this.statusButton.todayTotal = false
+                        this.statusButton.lastweekTotal = true
+                    }
+                    const barChart = echarts.init(document.getElementById("barChartTotal"))
+                    barChart.setOption(this.barOption)
+                    this.getDataChartTotal(flag).then(res => {
+                        const data = res.data
+                        if (!click) {
+                            this.cards.quantity.best_today = this.formatNumber(data.max)
+                            this.cards.quantity.small_best = data.max_at;
+                            this.cards.sorting.current = data.max
+                            const sum_today = data.datasets[0].data.reduce(function (a, b) {
+                                return a + b;
+                            }, 0);
+                            this.cards.sorting.total_today = this.formatNumber(sum_today)
+                            this.cards.sorting.sum_today = sum_today
+                        }
+                        barChart.setOption({
+                            xAxis: {
+                                data: data.labels,
+                            },
+                            series: this.fillSeriesBar(data.datasets)
+                        });
+                    }).then(() => {
+                        if (!click) {
+                            this.getDataChartTotal(this.params.yesterday).then(res => {
+                                const data = res.data
+                                this.cards.quantity.best_yesterday = this.formatNumber(data.max) + " " + data.max_at;
+                                var sum_yesterday = data.datasets[0].data.reduce(function (a, b) {
+                                    return a + b
+                                }, 0)
+                                this.cards.sorting.total_yesterday = this.formatNumber(sum_yesterday)
+
+                                const percent_best = this.getPercent(this.cards.sorting.current, data.max)
+                                console.log(this.cards.sorting.current)
+                                this.cards.quantity.percent_best = percent_best[0]
+                                this.cards.quantity.status_percent_today = percent_best[1]
+
+                                const percent_total = this.getPercent(this.cards.sorting.sum_today, sum_yesterday)
+                                this.cards.sorting.percent_total = percent_total[0]
+                                this.cards.sorting.status_percent_today = percent_total[1]
+                            }).then(() => {
+                                this.getDataChartTotal(this.params.lastweek).then(res => {
+                                    const data = res.data
+                                    this.cards.quantity.best_lastweek = this.formatNumber(data.max) + " " + data.max_at
+                                    var sum_lastweek = data.datasets[0].data.reduce(function (a, b) {
+                                        return a + b
+                                    }, 0)
+                                    this.cards.sorting.total_lastweek = this.formatNumber(sum_lastweek)
+
+                                    const percent_best_lastweek = this.getPercent(this.cards.sorting.current, data.max)
+                                    this.cards.quantity.percent_best_lastweek = percent_best_lastweek[0]
+                                    this.cards.quantity.status_percent_lastweek = percent_best_lastweek[1]
+
+                                    const percent_total_lastweek = this.getPercent(this.cards.sorting.sum_today, sum_lastweek)
+                                    this.cards.sorting.percent_total_lastweek = percent_total_lastweek[0]
+                                    this.cards.sorting.status_percent_lastweek = percent_total_lastweek[1]
+                                })
+                            })
+                        }
+                    })
+                },
+                onClickPower(flag, click = '') {
+                    if (flag === this.params.today) {
+                        this.statusButton.todayPower = true
+                        this.statusButton.lastweekPower = false
+                    } else {
+                        this.statusButton.todayPower = false
+                        this.statusButton.lastweekPower = true
+                    }
+                    const lineChart = echarts.init(document.getElementById("lineChartTotal"))
+                    lineChart.setOption(this.lineOption)
+                    let current
+                    this.getDataChartPower(flag).then(res => {
+                        const data = res.data
+                        if (!click) {
+                            current = data.max;
+                            this.cards.infeed.feed_today = this.formatNumber(data.max);
+                            this.cards.infeed.small_feed = "IDT" + data.max_in + "|" + data.max_at
+                        }
+                        lineChart.setOption({
+                            xAxis: {
+                                data: data.labels,
+                            },
+                            series: this.fillSeriesLine(data.datasets)
+                        });
+                    }).then(() => {
+                        if (!click) {
+                            this.getDataChartPower(this.params.yesterday, view = 'max').then(res => {
+                                const data = res.data
+                                this.cards.infeed.feed_yesterday = this.formatNumber(data.max) + " IDT" + data.max_in + "|" + data.max_at
+                                const percent_feed_yesterday = this.getPercent(current, data.max)
+                                this.cards.infeed.percent_feed_yesterday = percent_feed_yesterday[0]
+                                this.cards.infeed.status_percent_today = percent_feed_yesterday[1]
+
+                            }).then(() => {
+                                this.getDataChartPower(this.params.lastweek, view = 'max').then(res => {
+                                    const data = res.data
+                                    this.cards.infeed.feed_lastweek = this.formatNumber(data.max) + " IDT" + data.max_in + "|" + data.max_at
+                                    const percent_feed_lastweek = this.getPercent(current, data.max)
+                                    this.cards.infeed.percent_feed_lastweek = percent_feed_lastweek[0]
+                                    this.cards.infeed.status_percent_lastweek = percent_feed_lastweek[1]
+                                })
+                            })
+                        }
+                    })
+                },
+                getInfoCard() {
+                    let export_today_num
+                    let import_today_num
+                    this.getDataImExport(this.params.today).then(res => {
+                        const data = res.data
+                        import_today_num = data.datasets[0].total + data.datasets[1].total
+                        export_today_num = data.datasets[2].total + data.datasets[3].total
+                        this.cards.inbound.import_today = this.formatNumber(import_today_num)
+                        this.cards.outbound.export_today = this.formatNumber(export_today_num)
+                    }).then(() => {
+                        this.getDataImExport(this.params.yesterday).then(res => {
+                            const data = res.data
+                            const import_yesterday_num = data.datasets[0].total + data.datasets[1].total
+                            const export_yesterday_num = data.datasets[2].total + data.datasets[3].total
+                            this.cards.inbound.import_yesterday = this.formatNumber(import_yesterday_num)
+                            this.cards.outbound.export_yesterday = this.formatNumber(export_yesterday_num)
+
+                            const percent_import = this.getPercent(import_today_num, import_yesterday_num)
+                            this.cards.inbound.percent_import = percent_import[0]
+                            this.cards.inbound.status_percent_today = percent_import[1]
+
+                            const percent_export = this.getPercent(export_today_num, export_yesterday_num)
+                            this.cards.outbound.percent_export = percent_export[0]
+                            this.cards.outbound.status_percent_today = percent_export[1]
+                        }).then(() => {
+                            this.getDataImExport(this.params.lastweek).then(res => {
+                                const data = res.data
+                                const import_lastweek_num = data.datasets[0].total + data.datasets[1].total;
+                                const export_lastweek_num = data.datasets[2].total + data.datasets[3].total;
+                                this.cards.inbound.import_lastweek = this.formatNumber(import_lastweek_num)
+                                this.cards.outbound.export_lastweek = this.formatNumber(export_lastweek_num)
+
+                                const percent_import_last_week = this.getPercent(import_today_num, import_lastweek_num)
+                                this.cards.inbound.percent_import_last_week = percent_import_last_week[0]
+                                this.cards.inbound.status_percent_lastweek = percent_import_last_week[1]
+
+                                const percent_export_last_week = this.getPercent(export_today_num, export_lastweek_num)
+                                this.cards.outbound.percent_export_last_week = percent_export_last_week[0]
+                                this.cards.outbound.status_percent_lastweek = percent_export_last_week[1]
+                            })
+                        })
+                    })
+                },
+                showChuteFull() {
+                    this.getDataChuteFull().then(res => {
+                        this.cards.chutefull = res.data.data
+                    })
+                },
+
+                async getDataChartInboundRate(flag) {
+                    return await api.get(`{% url 'api:crossblet-chart-inboundrate' %}?when=${flag}`)
+                },
+
+                async getDataChartScannerRate(flag) {
+                    return await api.get(`{% url 'api:crossblet-chart-scannerrate' %}?when=${flag}`)
+                },
+
+                async getDataChartTotal(flag) {
+                    return await api.get(`{% url 'api:crossblet-chart-total' %}?when=${flag}`)
+                },
+
+                async getDataChartPower(flag, view = null) {
+                    return await api.get(`{% url 'api:crossblet-chart-power' %}?destination_type=total&when=${flag}&view=${view}&realtime=1`)
+                },
+
+                async getDataImExport(flag) {
+                    return await api.get(`{% url 'api:crossblet-chart-imexport' %}?when=${flag}&realtime=1`)
+                },
+
+                async getDataChuteFull() {
+                    return await api.get("{% url 'api:screen-chutefull' %}")
+                },
+
+                fillSeriesBar(sets) {
+                    series = [];
+                    for (i = 0; i < sets.length; i++) {
+                        var tmp = {
+                            name: sets[i].label,
+                            type: 'bar',
+                            markLine: {
+                                data: [
+                                    {
+                                        type: 'average', name: 'TB', lineStyle: {
+                                            color: 'rgba(229, 50, 62, 1)'
+                                        },
+                                    }
+                                ],
+                                precision: 0,
+                            },
+                            markPoint: {
+                                data: [
+                                    {type: 'max', name: "sản lượng lớn nhất", symbolSize: [70, 60]},
+                                ]
+                            },
+                            label: {
+                                show: true,
+                                position: 'top',
+                            },
+                            itemStyle: {
+                                color: sets[i].borderColor,
+                            },
+                            data: sets[i].data,
+                        };
+                        series.push(tmp);
+                    }
+
+                    return series;
+                },
+                fillSeriesLine(sets) {
+                    series = [];
+                    for (i = 0; i < sets.length; i++) {
+                        Math.max(sets[i].data)
+                        var tmp = {
+                            name: sets[i].label,
+                            symbolSize: 8,
+                            symbol: 'circle',
+                            lineStyle: {
+                                width: 4
+                            },
+                            markPoint: {
+                                data: [
+                                    {type: 'max'},
+                                ]
+                            },
+                            smooth: true,
+                            type: 'line',
+                            itemStyle: {
+                                color: sets[i].borderColor,
+                            },
+                            data: sets[i].data,
+                        };
+                        series.push(tmp);
+                    }
+
+                    return series;
+                },
+                formatNumber(number) {
+                    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1,')
+                },
+                getPercent(arg1, arg2) {
+                    let status
+                    if (arg1 !== 0 && arg2 !== 0) {
+                        if (arg1 < arg2) {
+                            percent = 100 - (arg1 / arg2) * 100
+                            status = true
+                        } else {
+                            status = false
+                            percent = (arg1 / arg2) * 100 - 100
+                        }
+                        return [percent.toFixed(2) + "%", status]
+                    }
+                    return [0, false]
+                }
+            },
+        })
+    </script>
+{% endblock %}

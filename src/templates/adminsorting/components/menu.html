@@ -1,0 +1,130 @@
+{% load i18n %}
+{% load utils %}
+
+<li>
+    <a href="{% url 'home' %}"><i class="fa fa-home"></i> <span
+            class="nav-label">{% trans "Trang chủ" context "Dashboard menu items" %}</span> </a>
+</li>
+
+{% url 'adminsorting:crossbelt-index' as dashboard_crossbelt_url %}
+{% url 'adminsorting:crossbelt-statistic-hour-induction' as dashboard_crossbelt_statistic_hour_url %}
+{% url 'adminsorting:crossbelt-statistic-induction' as dashboard_crossbelt_statistic_induction_url %}
+{% url 'adminsorting:crossbelt-statistic-imexport' as dashboard_crossbelt_statistic_imexport_url %}
+{% url 'adminsorting:crossbelt-statistic-chute' as dashboard_crossbelt_statistic_chute_url %}
+{% url 'adminsorting:crossbelt-plan-list' as dashboard_plan_url %}
+{% url 'adminsorting:crossbelt-operation-config-list' as operation_config_url %}
+
+<li
+        {% if request.path|startswith:dashboard_crossbelt_url or request.path|startswith:dashboard_crossbelt_statistic_hour_url or request.path|startswith:dashboard_crossbelt_statistic_induction_url or request.path|startswith:dashboard_crossbelt_statistic_imexport_url or request.path|startswith:dashboard_crossbelt_statistic_chute_url or request.path|startswith:dashboard_plan_url or request.path|startswith:operation_config_url %}
+            class="active" {% endif %}>
+    <a href="">
+        <i class="fa fa-crosshairs"></i>
+        <span class="nav-label">{% trans "Crossbelt" context "Dashboard menu items" %}</span>
+        <i class="fa arrow"></i>
+    </a>
+    <ul class="nav nav-second-level">
+        <li {% if request.path|startswith:dashboard_crossbelt_url %} class="active" {% endif %}>
+            <a href="{{ dashboard_crossbelt_url }}">{% trans "Tổng quan" context "Dashboard menu items" %}</a>
+        </li>
+    </ul>
+    <ul class="nav nav-second-level">
+        <li
+                {% if request.path|startswith:dashboard_crossbelt_statistic_hour_url or request.path|startswith:dashboard_crossbelt_statistic_induction_url or request.path|startswith:dashboard_crossbelt_statistic_imexport_url or request.path|startswith:dashboard_crossbelt_statistic_chute_url %}
+                    class="active" {% endif %}>
+            <a href="">
+                <span class="nav-label">{% trans "Thống kê" context "Dashboard menu items" %}</span>
+                <i class="fa arrow"></i>
+            </a>
+            <ul class="nav nav-third-level">
+                <li {% if request.path|startswith:dashboard_crossbelt_statistic_induction_url %}
+                    class="active" {% endif %}>
+                    <a href="{{ dashboard_crossbelt_statistic_induction_url }}">{% trans "Theo đầu cấp" context "Dashboard menu items" %}</a>
+                </li>
+                <li {% if request.path|startswith:dashboard_crossbelt_statistic_hour_url %}
+                    class="active" {% endif %}>
+                    <a href="{{ dashboard_crossbelt_statistic_hour_url }}">{% trans "Theo giờ từng đầu cấp" context "Dashboard menu items" %}</a>
+                </li>
+                <li {% if request.path|startswith:dashboard_crossbelt_statistic_imexport_url %}
+                    class="active" {% endif %}>
+                    <a href="{{ dashboard_crossbelt_statistic_imexport_url }}">{% trans "Sản lượng xuất nhập" context "Dashboard menu items" %}</a>
+                </li>
+                <li {% if request.path|startswith:dashboard_crossbelt_statistic_chute_url %}
+                    class="active" {% endif %}>
+                    <a href="{{ dashboard_crossbelt_statistic_chute_url }}">{% trans "Máng đầy" context "Dashboard menu items" %}</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="nav nav-second-level">
+        <li
+                {% if request.path|startswith:dashboard_plan_url or request.path|startswith:operation_config_url %}
+                    class="active" {% endif %}>
+            <a href="">
+                <span class="nav-label">{% trans "Vận hành" context "Dashboard menu items" %}</span>
+                <i class="fa arrow"></i>
+            </a>
+            <ul class="nav nav-third-level">
+                <li {% if request.path|startswith:dashboard_plan_url %} class="active" {% endif %}>
+                    <a href="{{ dashboard_plan_url }}">{% trans "Kịch bản" context "Dashboard menu items" %}</a>
+                </li>
+                <li {% if request.path|startswith:operation_config_url %} class="active" {% endif %}>
+                    <a href="{{ operation_config_url }}">{% trans "Cấu hình" context "Dashboard menu items" %}</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+
+<li>
+    <a href="">
+        <i class="fa fa-cog"></i>
+        <span class="nav-label">{% trans "Thiết bị" context "Dashboard menu items" %}</span>
+        <i class="fa arrow"></i>
+    </a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="">
+                <span class="nav-label">{% trans "Crossbelt" context "Dashboard menu items" %}</span>
+                <i class="fa arrow"></i>
+            </a>
+            <ul class="nav nav-third-level">
+                <li>
+                    <a href="">{% trans "Chute" context "Dashboard menu items" %}</a>
+                </li>
+                <li>
+                    <a href="">{% trans "Induction" context "Dashboard menu items" %}</a>
+                </li>
+                <li>
+                    <a href="">{% trans "Carrier" context "Dashboard menu items" %}</a>
+                </li>
+                <li>
+                    <a href="">{% trans "Máy in" context "Dashboard menu items" %}</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+
+<li>
+    <a href="">
+        <i class="fa fa-download"></i>
+        <span class="nav-label">{% trans "Xuất dữ liệu" context "Dashboard menu items" %}</span>
+        <i class="fa arrow"></i>
+    </a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="">
+                <span class="nav-label">{% trans "Crossbelt" context "Dashboard menu items" %}</span>
+                <i class="fa arrow"></i>
+            </a>
+            <ul class="nav nav-third-level">
+                <li>
+                    <a href="">{% trans "Thống kê" context "Dashboard menu items" %}</a>
+                </li>
+                <li>
+                    <a href="">{% trans "Logs" context "Dashboard menu items" %}</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>

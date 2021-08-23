@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+    web:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        restart: always
+        command: "python3 manage.py runserver 0.0.0.0:9000"
+        env_file: docker.env
+        network_mode: host
+#    beat:
+#        build:
+#            dockerfile: Dockerfile
+#            context: .
+#        restart: always
+#        command: "celery -A wms_local beat --loglevel=info --pidfile= "
+#        env_file: docker.env
+#        network_mode: host
+#    worker:
+#        build:
+#            dockerfile: Dockerfile
+#            context: .
+#        deploy:
+#            replicas: 3
+#            restart_policy:
+#                condition: on-failure
+#        restart: always
+#        command: "celery -A wms_local worker --loglevel=info"
+#        env_file: docker.env
+#        network_mode: host

@@ -1,0 +1,24 @@
+{% load i18n %}
+{% if user.is_authenticated %}
+    <li class="nav-header">
+        <div class="dropdown profile-element">
+            {% if user.avatar %}
+                <span>
+                    <img alt="image" style="border-radius: 50%!important; width: 64px; height: 64px"
+                         src="{{ user.avatar }}"/>
+                </span>
+            {% endif %}
+            <a href="#">
+                <span class="clear">
+                    <span class="block m-t-xs">
+                        <strong class="font-bold">{{ user.username }}</strong>
+                    </span>
+                    <span class="text-muted text-xs block">{{ user.get_full_name|truncatechars:30}}</span>
+                </span>
+            </a>
+        </div>
+        <div class="logo-element">
+            {{ config.LOGO_TEXT }}
+        </div>
+    </li>
+{% endif %}

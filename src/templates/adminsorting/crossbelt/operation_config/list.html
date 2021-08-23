@@ -1,0 +1,88 @@
+{% extends "adminsorting/base.html" %}
+{% load static %}
+
+{% block title %}
+    Cấu hình vận hành - Danh sách
+{% endblock %}
+
+{% block body_content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        {% include "message.html" %}
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Cấu hình vận hành</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for cf in chute_config %}
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    {{ cf.description }}
+                                </label>
+                                <div class="col-sm-10">
+                                    <select name="{{ cf.key }}" id="id_{{ cf.key }}" multiple
+                                            class="form-control select2-select">
+                                        {% if cf.type == "chute" %}
+                                            {% for i in chute %}
+                                                <option value="{{ i.id }}" {% if i.id in cf.value %}
+                                                        selected {% endif %}>{{ i.code }}</option>
+                                            {% endfor %}
+                                        {% elif cf.type == "province" %}
+                                            {% for i in province %}
+                                                <option value="{{ i.province_id }}" {% if i.province_id in cf.value %}
+                                                        selected {% endif %}>{{ i.province_name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if max_weight_config %}
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    {{ max_weight_config.description }}
+                                </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="id_{{ max_weight_config.key }}"
+                                           name="{{ max_weight_config.key }}" value="{{ max_weight_config.value }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <div class="col-sm-2 col-sm-offset-5">
+                                <button class="btn btn-primary" type="submit">
+                                    Cập nhật
+                                </button>
+                            </div>
+                        </div>
+                        <form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
+    <script src="{% static "js/plugins/select2/select2.full.min.js" %}"></script>
+    <script>
+        $(`.list-chute`).select2({
+            placeholder: 'Select an item',
+            ajax: {
+                url: '/api/webview/chute',
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                    }
+                    return query
+                },
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            }
+        });
+    </script>
+{% endblock %}

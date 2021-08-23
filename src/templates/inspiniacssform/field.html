@@ -1,0 +1,489 @@
+{% load i18n %}
+{% load inspiniacss %}
+{% load utils %}
+
+{% if field|is_checkbox %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }} {{ classes.single_value }}">
+            {% if field.auto_id %}
+                <div class="i-checks">
+                    <input id="{{ field.auto_id }}" name="{{ field.html_name }}" type="checkbox"{% if field.value %}
+                           checked="checked" {% endif %}
+                            {% if field.field.disabled %} disabled {% endif %}>
+                </div>
+            {% endif %}
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_checkbox_select_multiple %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            {% for choice in field %}
+                <div class="i-checks">
+                    <input id="{{ choice.id_for_label }}" name="{{ choice.data.name }}" type="checkbox"
+                           value="{{ choice.data.value }}"
+                            {% if choice.data.selected or choice.data.value|stringformat:"s" in field.value %}
+                           checked="checked" {% endif %}
+                            {% if field.field.disabled %} disabled {% endif %}
+                    >
+                    <label for="{{ choice.id_for_label }}">
+                        {{ choice.choice_label }}
+                    </label>
+                </div>
+            {% endfor %}
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_email %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <input type="email" class="form-control" id="{{ field.auto_id }}" name="{{ field.html_name }}"
+                   value="{% if field.value %}{{ field.value }}{% endif %}"
+                   {% if field.field.placeholder %}placeholder="{{ field.field.placeholder }}"{% endif %}
+                    {% if field.field.disabled %} disabled {% endif %}
+            >
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_password %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <input type="password" class="form-control" id="{{ field.auto_id }}" name="{{ field.html_name }}"
+                   value="{% if field.value %}{{ field.value }}{% endif %}"
+                   {% if field.field.placeholder %}placeholder="{{ field.field.placeholder }}"{% endif %}
+                    {% if field.field.disabled %} disabled {% endif %}
+            >
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_file %}
+    <div class="form-group">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            {% if not field.field.disabled %}
+                <div class="fileinput fileinput-new  {% if field.errors %}has-error{% endif %}"
+                     data-provides="fileinput">
+                <span class="btn btn-default btn-file">
+                    <span class="fileinput-new">{% trans "Select file" context "Dashboard form labels" %}</span>
+                    <span class="fileinput-exists">{% trans "Change" context "Dashboard form labels" %}</span>
+                    <input id="{{ field.auto_id }}" name="{{ field.html_name }}"
+                           {% if field.field.widget.attrs.accept %}accept="image/*"{% endif %} type="file"></span>
+                    <span class="fileinput-filename"></span>
+                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                </div>
+                {% for error in field.errors %}
+                    <span class="help-block text-danger">{{ error }}</span>
+                {% endfor %}
+                {% if field.help_text %}
+                    <span class="help-block m-b-none">
+                {{ field.help_text|safe }}
+            </span>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_radio %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            {% for choice in field %}
+                <div class="i-checks">
+                    {{ choice.tag }}
+                    <label for="{{ choice.id_for_label }}">
+                        {{ choice.choice_label }}
+                    </label>
+                </div>
+            {% endfor %}
+
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_date_input %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <div class="input-group date">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input type="text" class="form-control" name="{{ field.name }}" id="{{ field.auto_id }}"
+                       value="{% if field.value %}{{ field.value|date:"d/m/Y" }}{% endif %}"
+                        {% if field.field.disabled %} disabled {% endif %} autocomplete="off"
+                >
+            </div>
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_time_input %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <div class="input-group clockpicker" data-autoclose="true">
+                <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                <input type="text" class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id }}"
+                       value="{% if field.value %}{{ field.value|time:"H:i" }}{% endif %}"
+                        {% if field.field.disabled %} disabled {% endif %} autocomplete="off"
+                >
+            </div>
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_date_range %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <div class="input-group input-daterange" id="datepicker">
+                {% for value in field.value %}
+                    <input type="text" id="{{ field.auto_id }}" class="input-sm form-control"
+                           name="{{ field.name }}_{% cycle 'after' 'before' %}"
+                           value="{% if value %}{{ value }}{% endif %}" autocomplete="off">
+                    {% if forloop.counter == 1 %}<span class="input-group-addon">-</span>{% endif %}
+                {% endfor %}
+            </div>
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_datetime_input %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input type="text" class="form-control datetimechoicer" name="{{ field.name }}"
+                       id="{{ field.auto_id }}" value="{% if field.value %}{{ field.value }}{% endif %}"
+                       autocomplete="off" {% if field.field.disabled %} disabled {% endif %}>
+            </div>
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                  {{ field.help_text }}
+              </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_select %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label" for="{{ field.auto_id }}">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+            {% if field|is_select_multiple %}
+                <small>{% trans "(multiple)" context "Dashboard form labels" %}</small>
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            {% if field|is_select_multiple %}
+                <select id="{{ field.auto_id }}" name="{{ field.name }}"
+                        data-placeholder="{{ field.field.placeholder }}"
+                        {% if field|is_select_multiple %}multiple{% endif %} class="select2-select" tabindex="2"
+                        {% if field.field.disabled %} disabled {% endif %}>
+                    {% for choice in field.field.choices %}
+                        <option value="{{ choice.0 }}" {% if choice.0 in field.value %}selected{% endif %}>
+                            {{ choice.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <select id="{{ field.auto_id }}" name="{{ field.html_name }}"
+                        data-placeholder="{{ field.field.placeholder }}"
+                        {% if field|is_select_multiple %}multiple{% endif %} class="select2-select" tabindex="2"
+                        {% if field.field.disabled %} disabled {% endif %}>
+                    {% for choice in field.field.choices %}
+                        <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>
+                            {{ choice.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_number %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <input oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                   type="text" class="form-control" id="{{ field.auto_id }}" name="{{ field.html_name }}"
+                   value="{% if field.value != None %}{{ field.value }}{% endif %}"
+                   {% if field.field.placeholder %}placeholder="{{ field.field.placeholder }}"{% endif %}
+                    {% if field.field.disabled %} disabled {% endif %}
+            >
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+
+{% elif field|is_url %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <input type="url" class="form-control" id="{{ field.auto_id }}" name="{{ field.html_name }}"
+                   value="{% if field.value %}{{ field.value }}{% endif %}"
+                   placeholder="{{ field.field.placeholder|default:"https://www.exemple.com/" }}"
+                    {% if field.field.disabled %} disabled {% endif %}
+            >
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_text %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            <input type="text" class="form-control" id="{{ field.auto_id }}" name="{{ field.html_name }}"
+                   value="{% if field.value != None %}{{ field.value }}{% endif %}"
+                   {% if field.field.placeholder %}placeholder="{{ field.field.placeholder }}"{% endif %}
+                    {% if field.field.disabled %} disabled {% endif %}
+            >
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_editor %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }} {% if field.errors %}has-error{% endif %}">
+            <textarea id="{{ field.auto_id }}"
+                      class="ckeditor {{ field.field.widget.attrs.class }}"
+                      {% if field.field.disabled %}disabled{% endif %}
+                      name="{{ field.name }}">{% if field.value %}{{ field.value }}{% endif %}</textarea>
+
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% elif field|is_textarea %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }} {% if field.errors %}has-error{% endif %}">
+            <textarea id="{{ field.auto_id }}" rows="3"
+                      class="{{ field.field.widget.attrs.class }} form-control"
+                      name="{{ field.name }}"
+                    {% if field.field.disabled %} disabled {% endif %}>{% if field.value %}
+                {{ field.value }}{% endif %}</textarea>
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% else %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label class="{{ classes.label }} control-label">
+            {{ field.label }}
+            {% if field.field.required %}
+                *
+            {% endif %}
+        </label>
+        <div class="{{ classes.input }}">
+            {{ field }}
+            {% for error in field.errors %}
+                <span class="help-block text-danger">{{ error }}</span>
+            {% endfor %}
+            {% if field.help_text %}
+                <span class="help-block m-b-none">
+                {{ field.help_text }}
+            </span>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+{% endif %}

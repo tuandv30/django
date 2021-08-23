@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load utils %}
+{% load static %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+    <tr>
+        <td colspan="15" class="footable-visible">
+            <ul class="pagination pull-right">
+                {% if page_obj.has_previous %}
+                    <li class="footable-page-arrow"><a data-page="first" href="?page=1">«</a></li>
+                    {% if page_obj.number|add:previous_section >= 1 %}
+                        <li class="footable-page-arrow"><a data-page="prev"
+                                                           href="{% construct_get_query page=page_obj.number|add:previous_section %}">&hellip;</a>
+                        </li>
+                    {% elif page_obj.number|add:previous_section < 1 and page_obj.number|add:n_backward >= 1 %}
+                        <li class="footable-page-arrow"><a data-page="prev" href="?page=1">&hellip;</a></li>
+                    {% endif %}
+                {% endif %}
+
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page_obj.number == page %}
+                        <li class="footable-page active"><a data-page="{{ page }}"
+                                                            href="{% construct_get_query page=page %}">{{ page }}</a>
+                        </li>
+                    {% elif page > page_obj.number|add:n_backward and page < page_obj.number|add:n_forward %}
+                        <li class="footable-page"><a data-page="{{ page }}"
+                                                     href="{% construct_get_query page=page %}">{{ page }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    {% if page_obj.number|add:next_section <= page_obj.paginator.num_pages %}
+                        <li class="footable-page-arrow"><a
+                                href="{% construct_get_query page=page_obj.number|add:next_section %}">&hellip;</a></li>
+                    {% elif page_obj.number|add:next_section > page_obj.paginator.num_pages and page_obj.number|add:n_forward <= page_obj.paginator.num_pages %}
+                        <li class="footable-page-arrow"><a
+                                href="{% construct_get_query page=page_obj.paginator.num_pages %}">&hellip;</a></li>
+                    {% endif %}
+                    <li class="footable-page-arrow"><a data-page="next"
+                                                       href="{% construct_get_query page=page_obj.paginator.num_pages %}">»</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </td>
+    </tr>
+{% endif %}
+

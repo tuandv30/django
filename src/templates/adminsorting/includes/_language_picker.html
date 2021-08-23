@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load static %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_language_info_list for LANGUAGES as languages %}
+
+{% if languages|length > 1 %}
+    <li class="dropdown">
+        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+            <i class="fa fa-language"></i> <span class="label label-primary">{{ LANGUAGE_CODE }}</span>
+        </a>
+        <ul class="dropdown-menu">
+            <form id="language-picker" action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                {% for language in languages %}
+                    <li>
+                        <div class="text-center" style="padding: 3px 20px;min-height: 0;">
+                            <button type="submit" name="language" value="{{ language.code }}"
+                                    class="btn-link {% if language.code == LANGUAGE_CODE %}active{% endif %}">
+                                {% with 'img/flags/16/'|add:language.code|add:'.png' as image_static %}
+                                    <img src="{% static image_static %}" alt="flag"> {{ language.name_local }}
+                                {% endwith %}
+                            </button>
+                        </div>
+                    </li>
+                {% endfor %}
+            </form>
+        </ul>
+    </li>
+{% endif %}

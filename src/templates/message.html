@@ -1,0 +1,47 @@
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'info' %}
+            <div class="alert alert-info alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{ message|safe }}
+            </div>
+        {% elif message.tags == 'success' %}
+            <div class="alert alert-info alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{ message|safe }}
+            </div>
+        {% elif message.tags == 'warning' %}
+            <div class="alert alert-warning alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{ message|safe }}
+            </div>
+        {% elif message.tags == 'error' %}
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{ message|safe }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% if form.errors %}
+    {% for field in form %}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <a class="alert-link" href="#id_{{ field.name }}">{{ field.label }}</a> {{ error|escape }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{ error|escape }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endif %}

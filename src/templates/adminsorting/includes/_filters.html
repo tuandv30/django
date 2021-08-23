@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load inspiniacss %}
+{% load static %}
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>{% trans 'Lọc theo' context 'Dashboard filters' %}
+            <small>{{ filter.get_summary_message }}</small>
+        </h5>
+        <div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+        </div>
+    </div>
+    <div class="ibox-content">
+        <form method="get">
+            <div class="form-group">
+                {% for field in filter.form %}
+                    {% if field.name == 'sort_by' %}
+                        <input type="hidden" name="sort_by" value="{% if sort_by %}{{ sort_by }}{% endif %}">
+                    {% else %}
+                        {{ field|filter_inspiniacss }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% if chips %}
+                <div class="row form-group">
+                    <div class="col-sm-12">
+                        <ul class="tag-list no-padding">
+                            {% for chip in chips %}
+                                <li><a href="{{ chip.link }}"> {{ chip.content|safe }} ×</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="form-group">
+                {% if filter.is_bound_unsorted %}
+                    <a href="." class="btn btn-link">
+                        <i class="fa fa-refresh"></i> {% trans 'Clear' context 'Dashboard filters' %}
+                    </a>
+                {% endif %}
+                <button class="btn btn-primary" type="submit"><i
+                        class="fa fa-filter"></i> {% trans "Search" context 'Dashboard filters' %}</button>
+            </div>
+        </form>
+    </div>
+</div>

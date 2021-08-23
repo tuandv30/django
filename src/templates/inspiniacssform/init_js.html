@@ -1,0 +1,92 @@
+{% load static %}
+
+<!-- Jasny -->
+<script src="{% static "js/plugins/jasny/jasny-bootstrap.min.js" %}"></script>
+
+<!-- Data picker -->
+<script src="{% static "js/plugins/datapicker/bootstrap-datepicker.js" %}"></script>
+
+<!-- select2 -->
+<script src="{% static "js/plugins/select2/select2.full.min.js" %}"></script>
+
+<!-- Tags Input -->
+<script src="{% static "js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js" %}"></script>
+
+<!-- iCheck -->
+<script src="{% static "js/plugins/iCheck/icheck.min.js" %}"></script>
+
+<!-- blueimp -->
+<script src="{% static "js/plugins/blueimp/jquery.blueimp-gallery.min.js" %}"></script>
+
+<!-- datetimepicker -->
+<script src="{% static "js/plugins/fullcalendar/moment.min.js" %}"></script>
+<script src="{% static "js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" %}"></script>
+<script src="{% static "js/plugins/clockpicker/clockpicker.js" %}"></script>
+
+<!--metisMenu -->
+<script src="{% static "js/plugins/metisMenu/jquery.metisMenu.js" %}"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('.tagsinput').tagsinput({
+            tagClass: 'label label-primary',
+            maxTags: 0
+        });
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+
+        $('.input-group.input-daterange').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
+        });
+
+        $('.input-group.date').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true
+        });
+
+        $('.input-group .clockpicker').clockpicker({
+            placement: 'bottom',
+            align: 'left',
+            autoclose: true,
+        });
+
+        $('.input-group .datetimechoicer').datetimepicker({
+            autoclose: true,
+            todayBtn: true
+        });
+
+        $('.select2-select').select2({
+            width: "100%",
+            noResults: function (query) {
+                return 'No record' + query;
+            }
+        });
+
+        CKEDITOR.replaceClass = 'ckeditor';
+
+        //JS script load model content
+        $('.ls-modal').on('click', function (e) {
+            e.preventDefault();
+            let dataURL = $(this).attr('data-href');
+            $('.inmodal').load(dataURL, function () {
+                $('#base-modal').modal({show: true});
+            });
+        });
+
+        $(".tab-content").find("div.tab-pane:hidden:has(div.has-error)").each(function (index, tab) {
+            let id = $(tab).attr("id");
+            $('a[href="#' + id + '"]').tab('show');
+        });
+    });
+</script>
+

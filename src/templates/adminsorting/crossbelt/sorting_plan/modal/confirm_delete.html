@@ -1,0 +1,24 @@
+{% extends "webview/base_modal.html" %}
+
+{% load i18n %}
+
+{% block modal_title %}
+    {% blocktrans trimmed %}
+        Xoá kịch bản <strong>{{ sorting_plan.name }}</strong>
+    {% endblocktrans %}
+{% endblock %}
+
+{% block modal_icon %}fa fa-remove modal-icon text-danger red{% endblock %}
+{% block modal_action_url %}{% url 'adminsorting:plan-delete' pk=sorting_plan.pk %}{% endblock %}
+
+{% block modal_content %}
+    <div class="col s12">
+        {% trans "Bạn có chắc chắn muốn xoá kịch bản này?" %}
+    </div>
+{% endblock %}
+
+{% block modal_primary_action %}
+    <button type="submit" class="btn btn-danger">
+        <i class="fa fa-remove"></i> {% trans "Xoá" %}
+    </button>
+{% endblock %}

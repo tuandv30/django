@@ -1,0 +1,282 @@
+{% extends "adminsorting/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+    {% trans "Thêm mới" as title_action %}
+    {% trans "Kịch bản chia chọn" %} - {{ title_action }}
+{% endblock %}
+
+
+{% block body_content %}
+    {% trans "Thêm kịch bản" as title_action %}
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        {% include "message.html" %}
+
+        <div class="row">
+            <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
+            <script src="{% static "js/plugins/select2/select2.full.min.js" %}"></script>
+            <div class="col-md-12">
+                <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>{{ title_action }}</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Tên</label>
+                                <div class="col-sm-9">
+                                    <input type="text" required class="form-control" id="plan-name" name="plan-name"
+                                           value="">
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Mô tả</label>
+                                <div class="col-sm-9">
+                                    <input type="text" required class="form-control" id="plan-desc" name="plan-desc"
+                                           value="">
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Từ</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input type="text" required class="form-control clockpicker" name="plan-from"
+                                               id="plan-from" value="" placeholder="Từ" autocomplete="off">
+                                    </div>
+                                </div>
+                                <label class="col-sm-1 control-label">Đến</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input required type="text" class="form-control clockpicker" name="plan-to"
+                                               id="plan-to" value="" placeholder="Đến" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                        </div>
+                    </div>
+
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5> Layout Crossbelt</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="display: none">
+                            <img style="width: 100%; max-width:100%"
+                                 src="https://cache.giaohangtietkiem.vn/image/show/55c23ebd-517e-4cab-a33b-c4a3274bf84e/LayoutCrossbelt.jpg">
+                        </div>
+                    </div>
+
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>ZONE A</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                {% for chute in chutes_zone_a %}
+                                    <div class="form-group col-md-6">
+                                        <div class="col-sm-4">
+                                            {% if chute.id in reject_chute %}
+                                                <label style="color:#ed5565"
+                                                       class="col-sm-5 control-label">Máng {{ chute.id }}
+                                                    (reject)</label>
+                                            {% else %}
+                                                <label class="col-sm-5 control-label">Máng {{ chute.id }}</label>
+                                            {% endif %}
+                                            <div class="col-sm-7">
+                                                <select name="chute-{{ chute.id }}-trf-type"
+                                                        id="trf-type-{{ chute.id }}"
+                                                        data-placeholder=" PTVC"
+                                                        class="form-control trf-type select2-select">
+                                                    <option selected value="0">Bay và bộ</option>
+                                                    <option value="1">Bộ</option>
+                                                    <option value="2">Bay</option>
+                                                </select>
+                                                <button name="bt-{{ chute.id }}" id="bt-{{ chute.id }}"
+                                                        onclick="selectStation({{ chute.id }})" type="button"
+                                                        style="margin-top: 5px; width: 100%">
+                                                    <span>Bao thường</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div id="bt-station-{{ chute.id }}" hidden>
+                                                    <select style="width: 100%"
+                                                            onchange="selectItem({{ chute.id }}, value)"
+                                                            id="{{ chute.id }}-bt-station"
+                                                            name="{{ chute.id }}-bt-station" class="bt-station">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <select name="chute-{{ chute.id }}-list-dest" id="list-dest-{{ chute.id }}"
+                                                    multiple data-placeholder=" Danh sách đích"
+                                                    class="form-control list-dest">
+                                                <option value="">---------</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>ZONE B</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                {% for chute in chutes_zone_b %}
+                                    <div class="form-group col-md-6">
+                                        <div class="col-sm-4">
+                                            {% if chute.id in reject_chute %}
+                                                <label style="color:#ed5565"
+                                                       class="col-sm-5 control-label">Máng {{ chute.id }}
+                                                    (reject)</label>
+                                            {% else %}
+                                                <label class="col-sm-5 control-label">Máng {{ chute.id }}</label>
+                                            {% endif %}
+                                            <div class="col-sm-7">
+                                                <select name="chute-{{ chute.id }}-trf-type"
+                                                        id="trf-type-{{ chute.id }}"
+                                                        data-placeholder=" PTVC"
+                                                        class="form-control trf-type select2-select">
+                                                    <option selected value="0">Bay và bộ</option>
+                                                    <option value="1">Bộ</option>
+                                                    <option value="2">Bay</option>
+                                                </select>
+                                                <button name="bt-{{ chute.id }}" id="bt-{{ chute.id }}"
+                                                        onclick="selectStation({{ chute.id }})" type="button"
+                                                        style="margin-top: 5px; width: 100%">
+                                                    <span>Bao thường</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div id="bt-station-{{ chute.id }}" hidden>
+                                                    <select style="width: 100%"
+                                                            onchange="selectItem({{ chute.id }}, value)"
+                                                            id="{{ chute.id }}-bt-station"
+                                                            name="{{ chute.id }}-bt-station" class="bt-station">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <select name="chute-{{ chute.id }}-list-dest" id="list-dest-{{ chute.id }}"
+                                                    multiple data-placeholder=" Danh sách đích"
+                                                    class="form-control list-dest">
+                                                <option value="">---------</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-1 col-sm-offset-6">
+                            <button class="btn btn-primary" type="submit">
+                                {% trans 'Thêm' %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
+    <script src="{% static "js/plugins/select2/select2.full.min.js" %}"></script>
+    <script>
+        $(`.list-dest`).select2({
+            placeholder: 'Select an item',
+            ajax: {
+                url: "{% url 'api:crossbelt-get-dst'%}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        search: params.term,
+                    }
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            }
+        });
+        $(`.bt-station`).select2({
+            placeholder: 'Chọn kho đích',
+            ajax: {
+                url: "{% url 'api:crossbelt-get-dst-station'%}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        search: params.term,
+                    }
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            }
+        });
+
+        function selectStation(chute_id) {
+            let btStation = $('#bt-station-' + chute_id)
+            if (btStation.is(':hidden')) {
+                btStation.show()
+            } else {
+                btStation.hide()
+            }
+        }
+
+        function selectItem(chute_id, value) {
+            let bt = $('#bt-' + chute_id)
+            let btStation = $('#bt-station-' + chute_id)
+            if (value !== 'None') {
+                bt.empty()
+                bt.append("<span style='color:#1ab394'>Bao tổng</span>")
+            } else {
+                btStation.hide()
+                bt.empty()
+                bt.append("<span>Bao thường</span>")
+            }
+
+        }
+    </script>
+{% endblock %}

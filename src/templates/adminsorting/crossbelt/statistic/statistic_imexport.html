@@ -1,0 +1,218 @@
+{% extends "adminsorting/base.html" %}
+{% load static %}
+
+{% block title %}Warehouse Management System{% endblock %}
+
+
+{% block body_content %}
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <form method="GET" class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <input disabled type="text" class="form-control" name="from_time" required
+                                           id="from_time" value="24h trước">
+                                    <span style="border-right: none" class="input-group-addon"><i
+                                            class="fa fa-arrow-right"></i></span>
+                                    <input type="text" class="form-control datetimechoicer1" name="select_time" required
+                                           id="select_time" value="{{ select_time }}" autocomplete="on">
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <button id="submitButton" class="btn btn-primary" type="submit">
+                                    Thống Kê
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5> Nhập </h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h3 class="no-margins" id="total_import"></h3>
+                        <br>
+                        <h5 id="detail_import"></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5> Xuất </h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h3 class="no-margins" id="total_export"></h3>
+                        <br>
+                        <h5 id="detail_export"></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="margin-bottom: 20px">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div id="lineChartImExport"
+                                 data-url="{% url 'api:crossblet-chart-imexport' %}?time={{ select_time }}"
+                                 style="height: 600px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
+    <script src="{% static "js/plugins/echart/echarts.js" %}"></script>
+    <script src="{% static "js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" %}"></script>
+    <script>
+        $('.input-group .datetimechoicer1').datetimepicker({
+            minView: 1,
+            autoclose: true,
+        });
+    </script>
+
+    <script>
+        function formatNumber(number) {
+            return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1,')
+        }
+        var dom = document.getElementById("lineChartImExport");
+        var imExportLineCharts = echarts.init(dom)
+        var total_import = document.getElementById("total_import")
+        var total_export = document.getElementById("total_export")
+        var detail_import = document.getElementById("detail_import")
+        var detail_export = document.getElementById("detail_export")
+        var lineOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow',
+                },
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                textStyle: {
+                    color: 'rgba(255,255,255,1)'
+                },
+                formatter: function (params) {
+                    total_import = 0
+                    total_export = 0
+                    sub = ""
+                    for (i = 0; i < params.length; i++) {
+                        if (params[i].seriesIndex === 0 || params[i].seriesIndex === 1) {
+                            total_import = total_import + params[i].value;
+                        } else {
+                            total_export = total_export + params[i].value;
+                        }
+                        sub = sub + "<br />" + '<span style="font-size:20px;color:' + params[i].color + '">&#9679 </span>' + params[i].seriesName + ": " + params[i].value;
+                    }
+                    title = params[0].name + '<br /><span style="color:yellow">' + '&#9733 TỔNG NHẬP : ' + total_import + '</span>' + '<br /><span style="color:yellow">' + '&#9733 TỔNG XUẤT : ' + total_export + '</span>';
+                    return title + sub
+                }
+            },
+            legend: {
+                bottom: true,
+                icon: 'roundRects'
+            },
+            title: {
+                show: true,
+                left: 'center',
+                right: 'center',
+                textStyle: {
+                    fontStyle: 'normal',
+                    fontWeight: '300',
+                    fontSize: 24,
+                }
+            },
+            grid: {
+                left: "5%",
+                right: "5%",
+            },
+            toolbox: {
+                show: true,
+                orient: 'vertical',
+                left: 'right',
+                top: 'center',
+                feature: {
+                    mark: {show: true},
+                    saveAsImage: {
+                        show: true,
+                        title: 'tải ảnh về'
+                    }
+                }
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                }
+            ],
+        };
+
+        function fillSeriesLine(sets) {
+            series = [];
+            for (i = 0; i < sets.length; i++) {
+                var tmp = {
+                    name: sets[i].label,
+                    symbolSize: 8,
+                    symbol: 'circle',
+                    lineStyle: {
+                        width: 4
+                    },
+                    markPoint: {
+                        data: [
+                            {type: 'max', symbolSize: [70, 60]},
+                        ]
+                    },
+                    smooth: true,
+                    type: 'line',
+                    itemStyle: {
+                        color: sets[i].borderColor,
+                    },
+                    data: sets[i].data,
+                };
+                series.push(tmp);
+            }
+
+            return series;
+        }
+
+        function drawchart() {
+            var $lineChartTotal = $("#lineChartImExport");
+            $.ajax({
+                url: $lineChartTotal.data("url"),
+                success: function (data) {
+                    console.log(data)
+                    total_import.innerHTML = formatNumber(data.datasets[0].total + data.datasets[1].total)
+                    total_export.innerHTML = formatNumber(data.datasets[2].total + data.datasets[3].total)
+                    detail_import.innerHTML = formatNumber(data.datasets[0].total) + " Nhập sorting & " + formatNumber(data.datasets[1].total) + " Nhập trung chuyển"
+                    detail_export.innerHTML = formatNumber(data.datasets[2].total) + " Xuất sorting & " + formatNumber(data.datasets[3].total) + " Xuất trung chuyển"
+                    imExportLineCharts.setOption(lineOption);
+                    imExportLineCharts.setOption({
+                        title: {
+                            text: 'Tổng số đơn hàng Nhập & Xuất theo giờ'
+                        },
+                        xAxis: {
+                            data: data.labels,
+                        },
+                        series: fillSeriesLine(data.datasets)
+                    });
+                }
+            });
+        }
+    </script>
+    <script>
+        drawchart();
+        setInterval(function () {
+            drawchart();
+        }, 300000);
+    </script>
+{% endblock %}
